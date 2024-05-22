@@ -1,0 +1,14 @@
+body {
+    font-family: Arial, sans-serif;
+}
+#timerCanvas {
+    width: 120px;
+    height: 120px;
+    margin: 10px auto;
+    position: relative;
+}
+#timerCanvas canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
