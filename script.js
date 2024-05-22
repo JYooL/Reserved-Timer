@@ -25,7 +25,7 @@ function nextTimer() {
 
 function setTimers() {
     var inputDate = document.getElementById('dateInput').value;
-    var targetDate = new Date(inputDate + "T07:30:00");
+    var targetDate = new Date(inputDate + "T21:00:00");
     var currentDate = new Date();
     var millisecondsToStart = targetDate - currentDate;
 
