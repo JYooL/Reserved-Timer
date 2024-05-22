@@ -1,54 +1,61 @@
-var currentTimerIndex = 0;
-var totalDuration = 0;
-var durations = [80*60*1000, 100*60*1000, 30*60*1000, 30*60*1000, 70*60*1000];
-var messages = ["첫 번째 타이머 시작", "두 번째 타이머 시작", "세 번째 타이머 시작", "네 번째 타이머 시작", "다섯 번째 타이머 시작"];
+document.addEventListener('DOMContentLoaded', () => {
+    const addTimerButton = document.getElementById('add-timer');
+    const timerList = document.getElementById('timer-list');
 
-function startTimer(duration, message) {
-    var start = Date.now();
-    var timer = setInterval(function() {
-        var elapsed = Date.now() - start;
-        drawProgressCircle(elapsed, duration);
-        if (elapsed >= duration) {
-            clearInterval(timer);
-            alert(message + ' 종료');
-            currentTimerIndex++;
-            if (currentTimerIndex < durations.length) {
-                nextTimer();
-            }
-        }
-    }, 1000);
-}
-
-function nextTimer() {
-    startTimer(durations[currentTimerIndex], messages[currentTimerIndex]);
-}
-
-function setTimers() {
-    var inputDate = document.getElementById('dateInput').value;
-    var targetDate = new Date(inputDate + "T21:00:00");
-    var currentDate = new Date();
-    var millisecondsToStart = targetDate - currentDate;
-
-    if (millisecondsToStart > 0) {
-        setTimeout(nextTimer, millisecondsToStart);
-        alert("타이머가 설정되었습니다.");
-    } else {
-        alert("유효하지 않은 날짜입니다.");
+    // URL에서 타이머 설정을 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const startTimeParam = urlParams.get('startTime');
+    if (startTimeParam) {
+        createTimer(generateRandomId(), new Date(startTimeParam));
     }
-}
 
-function drawProgressCircle(elapsed, duration) {
-    var canvas = document.getElementById("progressCircle");
-    var context = canvas.getContext("2d");
-    var centerX = canvas.width / 2;
-    var centerY = canvas.height / 2;
-    var radius = canvas.width / 2 - 10;
-    var progress = elapsed / duration;
+    addTimerButton.addEventListener('click', () => {
+        const startTime = document.getElementById('start-time').value;
+        if (startTime) {
+            const timerId = generateRandomId();
+            createTimer(timerId, new Date(startTime));
+            // URL에 타이머 설정 추가
+            const newUrl = `${window.location.origin}${window.location.pathname}?startTime=${encodeURIComponent(startTime)}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        }
+    });
 
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.beginPath();
-    context.arc(centerX, centerY, radius, Math.PI * 1.5, Math.PI * (1.5 + 2 * progress), false);
-    context.lineWidth = 10;
-    context.strokeStyle = '#00ff00';
-    context.stroke();
-}
+    function createTimer(id, startTime) {
+        const timerElement = document.createElement('div');
+        timerElement.className = 'timer';
+        timerElement.id = id;
+        timerElement.innerHTML = `
+            <div class="timer-circle">
+                <div class="progress">
+                    <div class="fill"></div>
+                </div>
+            </div>
+            <div class="timer-info">
+                <p>타이머 ID: ${id}</p>
+                <p>시작 시간: ${startTime.toLocaleString()}</p>
+            </div>
+        `;
+        timerList.appendChild(timerElement);
+        startTimer(id, startTime);
+    }
+
+    function startTimer(id, startTime) {
+        const timerElement = document.getElementById(id);
+        const fillElement = timerElement.querySelector('.fill');
+        const interval = setInterval(() => {
+            const now = new Date();
+            const elapsed = now - startTime;
+            const seconds = elapsed / 1000;
+            const degrees = (seconds / 60) * 360; // assuming a 60-second timer for demo
+            fillElement.style.transform = `rotate(${degrees}deg)`;
+            if (degrees >= 360) {
+                clearInterval(interval);
+                fillElement.style.transform = 'rotate(360deg)';
+            }
+        }, 1000);
+    }
+
+    function generateRandomId() {
+        return Math.random().toString(36).substr(2, 9);
+    }
+});
