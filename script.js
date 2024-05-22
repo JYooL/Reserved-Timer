@@ -1,3 +1,8 @@
+var currentTimerIndex = 0;
+var totalDuration = 0;
+var durations = [80*60*1000, 100*60*1000, 30*60*1000, 30*60*1000, 70*60*1000];
+var messages = ["첫 번째 타이머 시작", "두 번째 타이머 시작", "세 번째 타이머 시작", "네 번째 타이머 시작", "다섯 번째 타이머 시작"];
+
 function startTimer(duration, message) {
     var start = Date.now();
     var timer = setInterval(function() {
@@ -6,28 +11,21 @@ function startTimer(duration, message) {
         if (elapsed >= duration) {
             clearInterval(timer);
             alert(message + ' 종료');
-            nextTimer();
+            currentTimerIndex++;
+            if (currentTimerIndex < durations.length) {
+                nextTimer();
+            }
         }
     }, 1000);
 }
 
 function nextTimer() {
-    var durations = [80*60*1000, 100*60*1000, 30*60*1000, 30*60*1000, 70*60*1000];
-    var messages = ["첫 번째 타이머 시작", "두 번째 타이머 시작", "세 번째 타이머 시작", "네 번째 타이머 시작", "다섯 번째 타이머 시작"];
-    var currentTimerIndex = 0;
-
-    var timer = setInterval(function() {
-        startTimer(durations[currentTimerIndex], messages[currentTimerIndex]);
-        currentTimerIndex++;
-        if (currentTimerIndex >= durations.length) {
-            clearInterval(timer);
-        }
-    }, 1000);
+    startTimer(durations[currentTimerIndex], messages[currentTimerIndex]);
 }
 
 function setTimers() {
     var inputDate = document.getElementById('dateInput').value;
-    var targetDate = new Date(inputDate + " 07:30:00");
+    var targetDate = new Date(inputDate + "T07:30:00");
     var currentDate = new Date();
     var millisecondsToStart = targetDate - currentDate;
 
