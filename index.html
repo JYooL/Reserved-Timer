@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservation Timer</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Timer App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Reservation Timer</h1>
-    <label for="dateInput">Date (YYYY-MM-DD):</label>
-    <input type="date" id="dateInput">
-    <button onclick="setTimers()">Set Timer</button>
-    <div id="timerCanvas">
-        <canvas id="progressCircle" width="120" height="120"></canvas>
+    <div class="container">
+        <h1>예약 타이머</h1>
+        <div class="timer-setup">
+            <label for="start-time">시작 날짜와 시간:</label>
+            <input type="datetime-local" id="start-time">
+            <button id="add-timer">+ 타이머 추가</button>
+        </div>
+        <div id="timer-list"></div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
